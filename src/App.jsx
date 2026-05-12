@@ -170,76 +170,93 @@ export default function App() {
           top: '40%', left: '55%', animation: 'blobPulse 8s ease-in-out infinite alternate 4s',
         }} />
 
-        {/* Badge */}
+        {/* Hero Content - Centered Layout */}
         <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-          background: colors.goldLight, color: colors.gold,
-          border: `1px solid rgba(200,150,12,0.25)`,
-          padding: '0.35rem 1rem', borderRadius: '100px',
-          fontSize: '0.8rem', fontWeight: 600,
-          letterSpacing: '0.04em', textTransform: 'uppercase',
-          marginBottom: '1.8rem', opacity: 0,
-          animation: 'fadeUp 0.7s 0.3s ease forwards',
-          position: 'relative', zIndex: 2,
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          maxWidth: '900px', width: '100%', position: 'relative', zIndex: 2,
         }}>
-          <span style={{ width: 6, height: 6, background: colors.gold, borderRadius: '50%', animation: 'pulse 2s ease infinite', display: 'block' }} />
-          Digital Transformation Agency
-        </div>
-
-        {/* Headline */}
-        <h1 style={{
-          fontSize: 'clamp(2.6rem, 6vw, 5rem)', fontWeight: 800,
-          color: colors.ink, maxWidth: '800px',
-          letterSpacing: '-0.03em', opacity: 0,
-          animation: 'fadeUp 0.8s 0.5s ease forwards',
-          position: 'relative', zIndex: 2, lineHeight: 1.1,
-        }}>
-          Empowering Brands with{' '}
-          <span style={{ color: colors.accent, position: 'relative', display: 'inline-block' }}>
-            End-to-End
-            <span style={{
-              content: '', position: 'absolute', bottom: -4, left: 0, right: 0,
-              height: 4, background: colors.gold, borderRadius: 2,
-              transform: 'scaleX(0)', transformOrigin: 'left',
-              animation: 'lineExpand 0.8s 1.4s ease forwards', display: 'block',
-            }} />
-          </span>{' '}
-          Digital Transformation
-        </h1>
-
-        <p style={{
-          fontSize: '1.1rem', color: colors.ink2, maxWidth: '560px',
-          margin: '1.5rem auto 2.5rem', lineHeight: 1.75,
-          opacity: 0, animation: 'fadeUp 0.8s 0.75s ease forwards',
-          position: 'relative', zIndex: 2, fontWeight: 300,
-        }}>
-          We strengthen the digital presence of businesses through innovative services, enabling them to thrive and stay ahead in the digital-first era.
-        </p>
-
-        {/* CTA Buttons */}
-        <div style={{
-          display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center',
-          opacity: 0, animation: 'fadeUp 0.8s 1s ease forwards',
-          position: 'relative', zIndex: 2,
-        }}>
-          <a href="#cta" style={{
-            background: colors.accent, color: '#fff',
-            padding: '0.9rem 2rem', borderRadius: '100px', border: 'none',
-            fontFamily: "'Syne', sans-serif", fontSize: '0.95rem', fontWeight: 600,
-            cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-            transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(26,58,107,0.3)',
+          {/* Badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+            background: colors.goldLight, color: colors.gold,
+            border: `1px solid rgba(200,150,12,0.25)`,
+            padding: '0.35rem 1rem', borderRadius: '100px',
+            fontSize: '0.8rem', fontWeight: 600,
+            letterSpacing: '0.04em', textTransform: 'uppercase',
+            marginBottom: '1.8rem', opacity: 0,
+            animation: 'fadeUp 0.7s 0.3s ease forwards',
           }}>
-            Start Your Project <ArrowRight size={16} />
-          </a>
-          <a href="#services" style={{
-            background: 'transparent', color: colors.ink,
-            padding: '0.9rem 2rem', borderRadius: '100px',
-            border: `1.5px solid ${colors.border}`, fontFamily: "'Syne', sans-serif",
-            fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer',
-            transition: 'all 0.2s',
+            <span style={{ width: 6, height: 6, background: colors.gold, borderRadius: '50%', animation: 'pulse 2s ease infinite', display: 'block' }} />
+            Digital Transformation Agency
+          </div>
+
+          {/* Headline - Two Line Layout */}
+          <h1 style={{
+            fontSize: 'clamp(2.6rem, 6vw, 5rem)', fontWeight: 800,
+            color: colors.ink, maxWidth: '800px',
+            letterSpacing: '-0.03em', opacity: 0,
+            animation: 'fadeUp 0.8s 0.5s ease forwards',
+            lineHeight: 1.1, textAlign: 'center', marginBottom: '1.5rem',
           }}>
-            Explore Services
-          </a>
+            Empowering Brands with{' '}
+            <span style={{ color: colors.accent, position: 'relative', display: 'inline-block' }}>
+              End-to-End
+              <span style={{
+                content: '', position: 'absolute', bottom: -4, left: 0, right: 0,
+                height: 4, background: colors.gold, borderRadius: 2,
+                transform: 'scaleX(0)', transformOrigin: 'left',
+                animation: 'lineExpand 0.8s 1.4s ease forwards', display: 'block',
+              }} />
+            </span>
+          </h1>
+
+          {/* Centered Transformation Text */}
+          <h2 style={{
+            fontFamily: "'Syne', sans-serif",
+            fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 800,
+            letterSpacing: '-0.025em', textAlign: 'center',
+            color: colors.teal,
+            marginBottom: '1.5rem',
+            opacity: 0,
+            animation: 'fadeUp 0.8s 0.65s ease forwards',
+            width: '100%',
+          }}>
+            Digital Transformation
+          </h2>
+
+          <p style={{
+            fontSize: '1.1rem', color: colors.ink2, maxWidth: '560px',
+            margin: '0 auto 2.5rem', lineHeight: 1.75,
+            opacity: 0, animation: 'fadeUp 0.8s 0.75s ease forwards',
+            fontWeight: 300, textAlign: 'center',
+          }}>
+            We strengthen the digital presence of businesses through innovative services, enabling them to thrive and stay ahead in the digital-first era.
+          </p>
+
+          {/* CTA Buttons */}
+          <div style={{
+            display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center',
+            opacity: 0, animation: 'fadeUp 0.8s 1s ease forwards',
+          }}>
+            <a href="#cta" style={{
+              background: colors.accent, color: '#fff',
+              padding: '0.9rem 2rem', borderRadius: '100px', border: 'none',
+              fontFamily: "'Syne', sans-serif", fontSize: '0.95rem', fontWeight: 600,
+              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+              transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(26,58,107,0.3)',
+            }}>
+              Start Your Project <ArrowRight size={16} />
+            </a>
+            <a href="#services" style={{
+              background: 'transparent', color: colors.ink,
+              padding: '0.9rem 2rem', borderRadius: '100px',
+              border: `1.5px solid ${colors.border}`, fontFamily: "'Syne', sans-serif",
+              fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}>
+              Explore Services
+            </a>
+          </div>
         </div>
 
         {/* Stats */}
@@ -269,9 +286,9 @@ export default function App() {
 
       {/* SERVICES */}
       <section id="services" style={{ padding: '6rem 5%', background: colors.surface }}>
-        <div className="services-header reveal">
+        <div className="services-header">
           <SectionLabel>What We Build</SectionLabel>
-          <h2 className="section-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '0.75rem' }}>
+          <h2 className="section-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '0.75rem', color: colors.ink }}>
             Complete Digital Solutions<br />Under One Roof
           </h2>
           <p style={{ fontSize: '1rem', color: colors.ink2, maxWidth: '520px', lineHeight: 1.7, fontWeight: 300 }}>
@@ -332,7 +349,7 @@ export default function App() {
           <div className="why-left">
             <div className="reveal">
               <SectionLabel>Why Choose Us</SectionLabel>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em' }}>
+              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', color: colors.ink }}>
                 Embrace Digital Transformation with Confidence
               </h2>
               <p style={{ fontSize: '1rem', color: colors.ink2, marginTop: '0.75rem', lineHeight: 1.7, fontWeight: 300 }}>
@@ -393,7 +410,7 @@ export default function App() {
         <div className="faq-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', marginTop: '3.5rem' }}>
           <div className="faq-left reveal">
             <SectionLabel>FAQ</SectionLabel>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em' }}>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', color: colors.ink }}>
               Common Questions, Answered
             </h2>
             <p style={{ fontSize: '1rem', color: colors.ink2, marginTop: '0.75rem', lineHeight: 1.7, fontWeight: 300 }}>
