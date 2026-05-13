@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import logo from './assets/digitallogo.png';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const colors = {
   bg: '#F7F5F0',
@@ -21,8 +26,31 @@ const colors = {
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [openProcessStep, setOpenProcessStep] = useState(null);
 
   useEffect(() => {
+    // GSAP Scroll Animations
+    gsap.utils.toArray('.gsap-fade-up').forEach((el) => {
+      gsap.fromTo(el,
+        { y: 50, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    gsap.utils.toArray('.gsap-scale').forEach((el) => {
+      gsap.fromTo(el,
+        { scale: 0.8, opacity: 0 },
+        {
+          scale: 1, opacity: 1, duration: 0.6, ease: 'back.out(1.7)',
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    // Intersection Observer for reveal animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -41,13 +69,13 @@ export default function App() {
   };
 
   return (
-    <div style={{ background: colors.bg, color: colors.ink, fontFamily: "'DM Sans', sans-serif", overflowX: 'hidden' }}>
+    <div style={{ background: colors.bg, color: colors.ink, fontFamily: "'Manrope', sans-serif", overflowX: 'hidden' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        h1, h2, h3, h4 { font-family: 'Syne', sans-serif; line-height: 1.15; }
+        h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; line-height: 1.15; }
 
         .reveal {
           opacity: 0;
@@ -92,16 +120,32 @@ export default function App() {
 
         @media (max-width: 900px) {
           .why-grid, .faq-grid { grid-template-columns: 1fr !important; gap: 3rem; }
-          .process-steps { grid-template-columns: repeat(2, 1fr) !important; }
-          .step:nth-child(5n) { border-right: 1px solid rgba(255,255,255,0.1); }
+          .process-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .step:nth-child(2n) { border-right: none !important; }
           .hero-stats { gap: 2rem; }
           .nav-links { display: none !important; }
+          .services-header { text-align: center; }
+          .services-header p { margin-left: auto; margin-right: auto; }
         }
         @media (max-width: 600px) {
-          .process-steps { grid-template-columns: 1fr !important; }
+          .process-grid { grid-template-columns: 1fr !important; }
           .step { border-right: none !important; }
           .why-right { grid-template-columns: 1fr !important; }
+          .hero-stats { flex-direction: row !important; gap: 2rem !important; flex-wrap: wrap; justify-content: center; }
+          .cta-box { padding: 3rem 1.5rem !important; }
+          .trust-card { grid-column: 1 !important; }
+        }
+
+        @media (max-width: 480px) {
+          h1 { font-size: clamp(1.8rem, 7vw, 2.5rem) !important; line-height: 1.2 !important; }
+          h2 { font-size: clamp(1.4rem, 5vw, 1.8rem) !important; }
+          .hero-section { padding: 6rem 4% 3rem !important; }
+          .hero-stats { margin-top: 2rem !important; flex-direction: row !important; gap: 1.5rem !important; }
+          .hero-stats > div { min-width: 90px !important; }
+          .hero-stats span:first-child { font-size: 1.5rem !important; }
+          .badge-text { font-size: 0.65rem !important; }
+          .cta-buttons { flex-direction: column; width: 100%; }
+          .cta-buttons a { width: 100%; justify-content: center; }
         }
 
         a { text-decoration: none; }
@@ -140,7 +184,7 @@ export default function App() {
       </nav>
 
       {/* HERO */}
-      <section className="hero" style={{
+      <section className="hero hero-section" style={{
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         padding: '8rem 5% 5rem', textAlign: 'center',
@@ -176,72 +220,100 @@ export default function App() {
           maxWidth: '900px', width: '100%', position: 'relative', zIndex: 2,
         }}>
           {/* Badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-            background: colors.goldLight, color: colors.gold,
-            border: `1px solid rgba(200,150,12,0.25)`,
-            padding: '0.35rem 1rem', borderRadius: '100px',
-            fontSize: '0.8rem', fontWeight: 600,
-            letterSpacing: '0.04em', textTransform: 'uppercase',
-            marginBottom: '1.8rem', opacity: 0,
-            animation: 'fadeUp 0.7s 0.3s ease forwards',
-          }}>
-            <span style={{ width: 6, height: 6, background: colors.gold, borderRadius: '50%', animation: 'pulse 2s ease infinite', display: 'block' }} />
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="badge-text"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+              background: colors.goldLight, color: colors.gold,
+              border: `1px solid rgba(200,150,12,0.25)`,
+              padding: '0.35rem 1rem', borderRadius: '100px',
+              fontSize: '0.8rem', fontWeight: 600,
+              letterSpacing: '0.04em', textTransform: 'uppercase',
+              marginBottom: '1.8rem',
+            }}
+          >
+            <motion.span
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              style={{ width: 6, height: 6, background: colors.gold, borderRadius: '50%', display: 'block' }}
+            />
             Digital Transformation Agency
-          </div>
+          </motion.div>
 
           {/* Headline - Two Line Layout */}
-          <h1 style={{
-            fontSize: 'clamp(2.6rem, 6vw, 5rem)', fontWeight: 800,
-            color: colors.ink, maxWidth: '800px',
-            letterSpacing: '-0.03em', opacity: 0,
-            animation: 'fadeUp 0.8s 0.5s ease forwards',
-            lineHeight: 1.1, textAlign: 'center', marginBottom: '1.5rem',
-          }}>
+          <motion.h1
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            style={{
+              fontSize: 'clamp(2.6rem, 6vw, 5rem)', fontWeight: 800,
+              color: colors.ink, maxWidth: '800px',
+              letterSpacing: '-0.03em',
+              lineHeight: 1.1, textAlign: 'center', marginBottom: '1.5rem',
+            }}
+          >
             Empowering Brands with{' '}
             <span style={{ color: colors.accent, position: 'relative', display: 'inline-block' }}>
               End-to-End
-              <span style={{
-                content: '', position: 'absolute', bottom: -4, left: 0, right: 0,
-                height: 4, background: colors.gold, borderRadius: 2,
-                transform: 'scaleX(0)', transformOrigin: 'left',
-                animation: 'lineExpand 0.8s 1.4s ease forwards', display: 'block',
-              }} />
+              <motion.span
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 1.2, ease: 'easeOut' }}
+                style={{
+                  position: 'absolute', bottom: -4, left: 0, right: 0,
+                  height: 4, background: colors.gold, borderRadius: 2,
+                  transformOrigin: 'left', display: 'block',
+                }}
+              />
             </span>
-          </h1>
+          </motion.h1>
 
           {/* Centered Transformation Text */}
-          <h2 style={{
-            fontFamily: "'Syne', sans-serif",
-            fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 800,
-            letterSpacing: '-0.025em', textAlign: 'center',
-            color: colors.teal,
-            marginBottom: '1.5rem',
-            opacity: 0,
-            animation: 'fadeUp 0.8s 0.65s ease forwards',
-            width: '100%',
-          }}>
+          <motion.h2
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.65 }}
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 800,
+              letterSpacing: '-0.025em', textAlign: 'center',
+              color: colors.teal,
+              marginBottom: '1.5rem',
+              width: '100%',
+            }}
+          >
             Digital Transformation
-          </h2>
+          </motion.h2>
 
-          <p style={{
-            fontSize: '1.1rem', color: colors.ink2, maxWidth: '560px',
-            margin: '0 auto 2.5rem', lineHeight: 1.75,
-            opacity: 0, animation: 'fadeUp 0.8s 0.75s ease forwards',
-            fontWeight: 300, textAlign: 'center',
-          }}>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.75 }}
+            style={{
+              fontSize: '1.1rem', color: colors.ink2, maxWidth: '560px',
+              margin: '0 auto 2.5rem', lineHeight: 1.75,
+              fontWeight: 300, textAlign: 'center',
+            }}
+          >
             We strengthen the digital presence of businesses through innovative services, enabling them to thrive and stay ahead in the digital-first era.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div style={{
-            display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center',
-            opacity: 0, animation: 'fadeUp 0.8s 1s ease forwards',
-          }}>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1 }}
+            className="cta-buttons"
+            style={{
+              display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center',
+            }}>
             <a href="#cta" style={{
               background: colors.accent, color: '#fff',
               padding: '0.9rem 2rem', borderRadius: '100px', border: 'none',
-              fontFamily: "'Syne', sans-serif", fontSize: '0.95rem', fontWeight: 600,
+              fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', fontWeight: 600,
               cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
               transition: 'all 0.2s', boxShadow: '0 4px 20px rgba(26,58,107,0.3)',
             }}>
@@ -250,26 +322,32 @@ export default function App() {
             <a href="#services" style={{
               background: 'transparent', color: colors.ink,
               padding: '0.9rem 2rem', borderRadius: '100px',
-              border: `1.5px solid ${colors.border}`, fontFamily: "'Syne', sans-serif",
+              border: `1.5px solid ${colors.border}`, fontFamily: "'Outfit', sans-serif",
               fontSize: '0.95rem', fontWeight: 600, cursor: 'pointer',
               transition: 'all 0.2s',
             }}>
               Explore Services
             </a>
-          </div>
+          </motion.div>
         </div>
 
         {/* Stats */}
         <div className="hero-stats" style={{
           display: 'flex', gap: '3rem', marginTop: '4rem',
           opacity: 0, animation: 'fadeUp 0.8s 1.3s ease forwards',
-          position: 'relative', zIndex: 2,
+          position: 'relative', zIndex: 2, flexWrap: 'wrap', justifyContent: 'center',
         }}>
           {[['150+', 'Projects Delivered'], ['98%', 'Client Satisfaction'], ['6+', 'Expert Services']].map(([num, label]) => (
-            <div key={label} style={{ textAlign: 'center' }}>
-              <span style={{ fontFamily: "'Syne', sans-serif", fontSize: '2rem', fontWeight: 800, color: colors.accent, display: 'block' }}>{num}</span>
+            <motion.div
+              key={label}
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.3 + (['150+', '98%', '6+'].indexOf(num) * 0.1) }}
+              style={{ textAlign: 'center', minWidth: '120px' }}
+            >
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', fontWeight: 800, color: colors.accent, display: 'block' }}>{num}</span>
               <span style={{ fontSize: '0.8rem', color: colors.ink3 }}>{label}</span>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -287,13 +365,33 @@ export default function App() {
       {/* SERVICES */}
       <section id="services" style={{ padding: '6rem 5%', background: colors.surface }}>
         <div className="services-header">
-          <SectionLabel>What We Build</SectionLabel>
-          <h2 className="section-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '0.75rem', color: colors.ink }}>
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionLabel>What We Build</SectionLabel>
+          </motion.div>
+          <motion.h2
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="section-title"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '0.75rem', color: colors.ink }}
+          >
             Complete Digital Solutions<br />Under One Roof
-          </h2>
-          <p style={{ fontSize: '1rem', color: colors.ink2, maxWidth: '520px', lineHeight: 1.7, fontWeight: 300 }}>
+          </motion.h2>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ fontSize: '1rem', color: colors.ink2, maxWidth: '520px', lineHeight: 1.7, fontWeight: 300 }}
+          >
             From design to deployment, we cover every layer of your digital presence with precision and care.
-          </p>
+          </motion.p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '3.5rem' }}>
@@ -321,24 +419,63 @@ export default function App() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 0, marginTop: '3.5rem', position: 'relative', zIndex: 1 }}>
+        <div style={{ marginTop: '3.5rem', position: 'relative', zIndex: 1 }}>
           {processSteps.map((step, i) => (
-            <div key={step.num} className={`step reveal reveal-delay-${(i % 5) + 1}`} style={{
-              padding: '1.5rem 1.25rem',
-              borderRight: `1px solid rgba(255,255,255,0.1)`,
-              borderBottom: `1px solid rgba(255,255,255,0.1)`,
-              transition: 'background 0.25s',
-            }}>
-              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', color: colors.gold, marginBottom: '0.75rem' }}>
-                {step.num}
-              </div>
-              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.875rem', fontWeight: 700, color: '#fff', lineHeight: 1.3, marginBottom: '0.4rem' }}>
-                {step.title}
-              </div>
-              <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.55 }}>
-                {step.desc}
-              </div>
-            </div>
+            <motion.div
+              key={step.num}
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+            >
+              <button
+                onClick={() => setOpenProcessStep(openProcessStep === i ? null : i)}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '1rem 1.25rem', background: openProcessStep === i ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)', borderRadius: openProcessStep === i ? '12px 12px 0 0' : '12px',
+                  cursor: 'pointer', color: '#fff', transition: 'all 0.3s',
+                  marginBottom: openProcessStep === i ? 0 : '0.75rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', textAlign: 'left' }}>
+                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', color: colors.gold, minWidth: '70px' }}>
+                    {step.num}
+                  </span>
+                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', fontWeight: 600 }}>
+                    {step.title}
+                  </span>
+                </div>
+                <motion.span
+                  animate={{ rotate: openProcessStep === i ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronDown size={20} />
+                </motion.span>
+              </button>
+              <AnimatePresence>
+                {openProcessStep === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                      background: 'rgba(255,255,255,0.08)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderTop: 'none',
+                      borderRadius: '0 0 12px 12px',
+                      padding: '1rem 1.25rem',
+                      marginBottom: '0.75rem',
+                    }}
+                  >
+                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+                      {step.desc}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -372,7 +509,7 @@ export default function App() {
                     {point.icon}
                   </div>
                   <div>
-                    <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+                    <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', fontWeight: 700, marginBottom: '0.25rem' }}>
                       {point.title}
                     </div>
                     <div style={{ fontSize: '0.83rem', color: colors.ink2, lineHeight: 1.55 }}>
@@ -393,7 +530,7 @@ export default function App() {
                 gridColumn: card.full ? '1 / -1' : undefined,
               }}>
                 <span style={{ fontSize: '2rem', marginBottom: '0.75rem', display: 'block' }}>{card.icon}</span>
-                <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem', fontWeight: 700, marginBottom: '0.4rem', color: colors.ink }}>
+                <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1rem', fontWeight: 700, marginBottom: '0.4rem', color: colors.ink }}>
                   {card.title}
                 </div>
                 <div style={{ fontSize: '0.8rem', color: colors.ink2, lineHeight: 1.55 }}>
@@ -426,7 +563,7 @@ export default function App() {
                   style={{
                     width: '100%', background: 'none', border: 'none', textAlign: 'left',
                     padding: '1.25rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    fontFamily: "'Syne', sans-serif", fontSize: '0.95rem', fontWeight: 600,
+                    fontFamily: "'Outfit', sans-serif", fontSize: '0.95rem', fontWeight: 600,
                     color: colors.ink, cursor: 'pointer', gap: '1rem',
                   }}
                 >
@@ -481,7 +618,7 @@ export default function App() {
           </p>
           <a href="mailto:hello@digitalberge.com" style={{
             background: '#fff', color: colors.accent, padding: '0.95rem 2.5rem',
-            borderRadius: '100px', border: 'none', fontFamily: "'Syne', sans-serif",
+            borderRadius: '100px', border: 'none', fontFamily: "'Outfit', sans-serif",
             fontSize: '1rem', fontWeight: 700, cursor: 'pointer',
             display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
             transition: 'transform 0.15s, box-shadow 0.2s',
@@ -524,10 +661,14 @@ function ServiceCard({ service, delay }) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div
+    <motion.div
       className={`service-card reveal reveal-delay-${delay}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      initial={{ y: 40, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5, delay: delay * 0.1 }}
       style={{
         background: colors.bg, border: `1px solid ${colors.border2}`,
         borderRadius: 16, padding: '2rem', position: 'relative', overflow: 'hidden',
@@ -550,7 +691,7 @@ function ServiceCard({ service, delay }) {
       }}>
         {service.icon}
       </div>
-      <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: colors.ink }}>
+      <h3 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: colors.ink }}>
         {service.title}
       </h3>
       <p style={{ fontSize: '0.875rem', color: colors.ink2, lineHeight: 1.65, marginBottom: '1.2rem' }}>
@@ -566,7 +707,7 @@ function ServiceCard({ service, delay }) {
           </span>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
